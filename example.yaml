@@ -1,0 +1,43 @@
+broker:
+  - name: "home_broker"
+    protocol: "AMQP"
+    host: 155.207.33.187
+    port: 54642
+    vhost: '/'
+    global_namespace: ""
+
+connector:
+  - name: "example_pub_connector"
+    type: "pub"
+    ros_endpoint:
+      name: "a"
+      uri: "/example_pub"
+      msg_type: "std_msgs/String"
+      queue_size: 1
+      latch: False
+    broker_endpoint:
+      name: "a"
+      uri: "example_pub"
+      exchange: "amq.topic"
+
+  - name: "example_sub_connector"
+    type: "sub"
+    ros_endpoint:
+      name: "b"
+      uri: "/example_sub"
+      msg_type: "std_msgs/Int64"
+    broker_endpoint:
+      name: "b"
+      uri: "example_sub"
+      exchange: "amq.topic"
+
+  - name: "example_rpc_connector"
+    type: "rpc"
+    ros_endpoint:
+      name: "c"
+      uri: "/example_rpc"
+      msg_type: "std_srvs/String"
+    broker_endpoint:
+      name: "c"
+      uri: "example_rpc"
+      exchange: ""
