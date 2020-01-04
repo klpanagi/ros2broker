@@ -9,6 +9,11 @@ class BrokerEndpointAuth(object):
 
 class BrokerAuthPlain(BrokerEndpointAuth):
     def __init__(self, username, password):
+        """__init__
+
+        :param username: The auth username
+        :param password: The auth password
+        """
         self._username = username
         self._password = password
 

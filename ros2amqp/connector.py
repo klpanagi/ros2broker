@@ -22,6 +22,11 @@ from .endpoint import *
 
 class Connector(object):
     def __init__(self, name=None, debug=False):
+        """__init__
+
+        :param name: The name of the connector / Optional
+        :param debug: Either or not to enable debug console output
+        """
         self._name = name
         self._debug = debug
         self._ros_endpoint = None
@@ -63,6 +68,13 @@ class RPCConnector(Connector):
             *args,
             **kwargs
     ):
+        """__init__
+
+        :param ros_endpoint: ROSEndpoint instance
+        :param broker_endpoint: BrokerEndpoint instance
+        :param *args:
+        :param **kwargs:
+        """
         super(RPCConnector, self).__init__(*args, **kwargs)
         self._ros_endpoint = ros_endpoint
         self._broker_endpoint = broker_endpoint
@@ -76,11 +88,19 @@ class PubConnector(Connector):
         *args,
         **kwargs
     ):
+        """__init__
+
+        :param ros_endpoint: ROSEndpoint instance
+        :param broker_endpoint: BrokerEndpoint instance
+        :param *args:
+        :param **kwargs:
+        """
         super(PubConnector, self).__init__(*args, **kwargs)
         self._ros_endpoint = ros_endpoint
         self._broker_endpoint = broker_endpoint
 
     def _init_ros_subscriber(self):
+        """_init_ros_subscriber"""
         if self.debug:
             log_level = rospy.DEBUG
         else:
@@ -99,6 +119,10 @@ class PubConnector(Connector):
         rospy.loginfo('ROS Subscriber <{}> ready!'.format(_uri))
 
     def _ros_sub_callback(self, msg):
+        """_ros_sub_callback
+
+        :param msg: Message received from ROS Topic
+        """
         data = {}
         rospy.logdebug('ROS received message: %s' % (msg))
         try:
@@ -109,6 +133,7 @@ class PubConnector(Connector):
         self._broker_send_msg(data)
 
     def _init_broker_publisher(self):
+        """_init_broker_publisher"""
         _uri = self._broker_endpoint.uri
         _host = self._broker_endpoint.broker_ref.host
         _port = self._broker_endpoint.broker_ref.port
@@ -136,6 +161,10 @@ class PubConnector(Connector):
         rospy.loginfo('AMQP Publisher <{}> ready!'.format(_uri))
 
     def _broker_send_msg(self, data):
+        """_broker_send_msg
+
+        :param data: Data to send to the broker / Dictionary
+        """
         if not isinstance(data, dict):
             raise TypeError('Data should be of type dict')
         try:
@@ -165,6 +194,13 @@ class SubConnector(Connector):
             *args,
             **kwargs
     ):
+        """__init__
+
+        :param ros_endpoint: ROSEndpoint instance
+        :param broker_endpoint: BrokerEndpoint instance
+        :param *args:
+        :param **kwargs:
+        """
         super(SubConnector, self).__init__(*args, **kwargs)
         self._ros_endpoint = ros_endpoint
         self._broker_endpoint = broker_endpoint
@@ -178,6 +214,7 @@ class SubConnector(Connector):
         return self._broker_endpoint
 
     def _init_broker_subscriber(self):
+        """_init_broker_subscriber"""
         _uri = self._broker_endpoint.uri
         _host = self._broker_endpoint.broker_ref.host
         _port = self._broker_endpoint.broker_ref.port
@@ -207,6 +244,12 @@ class SubConnector(Connector):
         self._broker_sub.run_threaded()
 
     def _broker_sub_callback(self, msg, meta):
+        """_broker_sub_callback
+
+        :param msg: The input message / Dictionary
+        :param meta: Metainformation passed to client callback for advanced
+            usage.
+        """
         try:
             ros_msg = dict_to_ros_msg(self.ros_endpoint.msg_type, msg)
             rospy.loginfo('Sending message to ROS: {}'.format(ros_msg))
@@ -216,6 +259,7 @@ class SubConnector(Connector):
                           ' to {{ rossub.topic.msgType }}'.format(msg))
 
     def _init_ros_publisher(self):
+        """_init_ros_publisher"""
         if self.debug:
             log_level = rospy.DEBUG
         else:

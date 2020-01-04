@@ -17,6 +17,15 @@ class BrokerDefinition(object):
         global_ns='',
         protocol='AMQP'
     ):
+        """__init__
+
+        :param name: Name of the broker / Optional
+        :param host: The domain of the server hosting the broker.
+        :param port: The port of the broker. Differs between protocols
+        :param vhost: The vhost to connect to.
+        :param global_ns: A global namespace for the communication
+        :param protocol: Protocol to use for messaging communication
+        """
         # TODO: Make Enumeration class
         if protocol not in self.SUPPORTED_PROTOCOLS:
             raise ValueError('')
