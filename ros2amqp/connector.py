@@ -30,6 +30,7 @@ import json
 from rosconversions import (
     ros_msg_to_dict,
     get_message_class,
+    get_service_class,
     dict_to_ros_msg
 )
 
@@ -94,6 +95,71 @@ class RPCConnector(Connector):
         super(RPCConnector, self).__init__(*args, **kwargs)
         self._ros_endpoint = ros_endpoint
         self._broker_endpoint = broker_endpoint
+
+    def _init_rpc_server(self):
+        _uri = self._broker_endpoint.uri
+        _host = self._broker_endpoint.broker_ref.host
+        _port = self._broker_endpoint.broker_ref.port
+        _vhost = self._broker_endpoint.broker_ref.vhost
+
+        _username = self._broker_endpoint.auth.username
+        _password = self._broker_endpoint.auth.password
+
+        _broker_conn_params = amqp_common.ConnectionParameters(
+            host=_host,
+            port=_port,
+            vhost=_vhost
+        )
+
+        _broker_conn_params.credentials = amqp_common.Credentials(
+            _username,
+            _password
+        )
+
+        self._broker_rpc_server = amqp_common.RpcServer(
+            _uri,
+            on_request=self._broker_rpc_callback,
+            connection_params=_broker_conn_params,
+            debug=True
+        )
+
+    def _init_ros_service_client(self):
+        _uri = self.ros_endpoint.uri
+        _node_name = self.ros_endpoint.name
+        _srv_type = self.ros_endpoint.srv_type
+
+        _srv_pkg = _srv_type.split('/')[0]
+        _srv_cls  = _srv_type.split('/')[1]
+
+        srv_cls = get_service_class(_srv_type)
+
+        if srv_cls is None:
+            raise ValueError('Given Srv type ({}) does not exist'.format(
+                _srv_type))
+
+        rospy.loginfo('Waiting for ROS Service {} ...'.format(_uri))
+        # rospy.wait_for_service(_uri)
+
+        self.ros_srv = rospy.ServiceProxy(
+            _uri,
+            srv_cls
+        )
+        rospy.loginfo('ROS Service Client [{}] ready'.format(_uri))
+
+    def _broker_rpc_callback(self, msg, meta):
+        pass
+
+    def run(self):
+        """Start the bridge."""
+        self._init_rpc_server()
+        self._broker_rpc_server.run_threaded()
+        self._init_ros_service_client()
+
+        rospy.loginfo('Connector [AMQP:{} -> ROS:{}] ready'.format(
+            self._broker_endpoint.uri, self._ros_endpoint.uri))
+
+        while not rospy.is_shutdown():
+            rospy.sleep(0.001)
 
 
 class PubConnector(Connector):
@@ -302,7 +368,7 @@ class SubConnector(Connector):
         self._init_ros_publisher()
 
         rospy.loginfo('Connector [AMQP:{} -> ROS:{}] ready'.format(
-            self._ros_endpoint.uri, self._broker_endpoint.uri))
+            self._broker_endpoint.uri, self._ros_endpoint.uri))
 
         while not rospy.is_shutdown():
             rospy.sleep(0.001)
