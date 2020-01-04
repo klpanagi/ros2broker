@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 # Copyright (C) 2020  Panayiotou, Konstantinos <klpanagi@gmail.com>
 # Author: Panayiotou, Konstantinos <klpanagi@gmail.com>
 #
@@ -14,41 +16,37 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import absolute_import
-
-from .connector import (
-    RPCConnector,
-    SubConnector,
-    PubConnector
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals
 )
 
-from .endpoint import (
-    ROSPubEndpoint,
-    ROSSubEndpoint,
-    ROSServiceEndpoint,
-    BrokerPubEndpoint,
-    BrokerSubEndpoint,
-    BrokerRPCEndpoint
+import sys
+
+from ros2amqp import (
+    ConnectorThreadExecutor,
+    YAMLParser
 )
 
-from .broker import (
-    BrokerDefinition
-)
 
-from .auth import (
-    BrokerAuthPlain
-)
+def main():
+    model_path = ''
+    if len(sys.argv) < 2:
+        model_path = 'example_model.yaml'
+    else:
+        model_path = sys.argv[1]
+    c_list = YAMLParser.load(model_path)
+    executor = ConnectorThreadExecutor()
+    print(c_list)
+    for c in c_list:
+        executor.run_connector(c)
+    # executor.run_connector(sc)
+    # executor.run_connector(rpc_con)
 
-from .executor import ConnectorThreadExecutor
+    executor.run_forever()
 
-from .model_parser import YAMLParser
 
-__all__ = [
-    'RPCConnector', 'SubConnector', 'PubConnector',
-    'ROSPubEndpoint', 'ROSSubEndpoint', 'ROSServiceEndpoint',
-    'BrokerSubEndpoint', 'BrokerPubEndpoint', 'BrokerRPCEndpoint',
-    'BrokerDefinition',
-    'BrokerAuthPlain',
-    'ConnectorThreadExecutor',
-    'YAMLParser'
-]
+if __name__ == "__main__":
+    main()
