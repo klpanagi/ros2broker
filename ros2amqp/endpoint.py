@@ -59,7 +59,7 @@ class ROSServiceEndpoint(ROSEndpoint):
 
 
 class ROSPubEndpoint(ROSEndpoint):
-    def __init__(self, msg_type, queue_size, latch, *args, **kwargs):
+    def __init__(self, msg_type, queue_size=1, latch=False, *args, **kwargs):
         self._msg_type = msg_type
         self._queue_size = queue_size
         self._latch = latch

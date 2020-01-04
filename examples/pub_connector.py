@@ -2,6 +2,7 @@
 
 from ros2amqp import (
     PubConnector, ROSPubEndpoint, BrokerPubEndpoint,
+    SubConnector, ROSSubEndpoint, BrokerSubEndpoint,
     BrokerAuthPlain, BrokerDefinition,
     ConnectorThreadExecutor
 )
@@ -20,8 +21,6 @@ def main():
 
     ros_ep_1 = ROSPubEndpoint(
         msg_type='std_msgs/String',
-        queue_size=1,
-        latch=True,
         uri='/test_pub_con',
         name='test_pub_con'
     )
@@ -33,23 +32,21 @@ def main():
         auth=BrokerAuthPlain(username='bot', password='b0t')
     )
 
-    ros_ep_2 = ROSPubEndpoint(
+    ros_ep_2 = ROSSubEndpoint(
         msg_type='std_msgs/String',
-        queue_size=1,
-        latch=True,
-        uri='/test_pub_con_2',
-        name='test_pub_con_2'
+        uri='/test_sub_con',
+        name='test_sub_con'
     )
 
-    broker_ep_2 = BrokerPubEndpoint(
-        uri='test_pub_con_2',
-        name='test_pub_con_2',
+    broker_ep_2 = BrokerSubEndpoint(
+        uri='test_sub_con',
+        name='test_sub_con',
         broker_ref=broker,
         auth=BrokerAuthPlain(username='bot', password='b0t')
     )
 
-    pc = PubConnector(ros_ep_1, broker_ep_2)
-    pc2 = PubConnector(ros_ep_2, broker_ep_2)
+    pc = PubConnector(ros_ep_1, broker_ep_1)
+    pc2 = SubConnector(ros_ep_2, broker_ep_2)
 
     executor = ConnectorThreadExecutor()
     executor.run_connector(pc)

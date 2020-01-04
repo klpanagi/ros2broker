@@ -1,11 +1,21 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals
+)
 
 import uuid
 
 import rospy
 import amqp_common
-from rosconversions import ros_msg_to_dict, get_message_class
+import json
+
+from rosconversions import (
+    ros_msg_to_dict,
+    get_message_class,
+    dict_to_ros_msg
+)
 
 from .endpoint import *
 
@@ -98,7 +108,6 @@ class PubConnector(Connector):
             return
         self._broker_send_msg(data)
 
-
     def _init_broker_publisher(self):
         _uri = self._broker_endpoint.uri
         _host = self._broker_endpoint.broker_ref.host
@@ -167,3 +176,73 @@ class SubConnector(Connector):
     @property
     def broker_endpoint(self):
         return self._broker_endpoint
+
+    def _init_broker_subscriber(self):
+        _uri = self._broker_endpoint.uri
+        _host = self._broker_endpoint.broker_ref.host
+        _port = self._broker_endpoint.broker_ref.port
+        _vhost = self._broker_endpoint.broker_ref.vhost
+
+        _username = self._broker_endpoint.auth.username
+        _password = self._broker_endpoint.auth.password
+
+        _broker_conn_params = amqp_common.ConnectionParameters(
+            host=_host,
+            port=_port,
+            vhost=_vhost
+        )
+
+        _broker_conn_params.credentials = amqp_common.Credentials(
+            _username,
+            _password
+        )
+
+        self._broker_sub = amqp_common.SubscriberSync(
+            _uri,
+            on_message=self._broker_sub_callback,
+            connection_params=_broker_conn_params,
+            queue_size=10
+        )
+        rospy.loginfo('AMQP Subscriber <{}> ready!'.format(_uri))
+        self._broker_sub.run_threaded()
+
+    def _broker_sub_callback(self, msg, meta):
+        try:
+            ros_msg = dict_to_ros_msg(self.ros_endpoint.msg_type, msg)
+            rospy.loginfo('Sending message to ROS: {}'.format(ros_msg))
+            self._ros_pub.publish(ros_msg)
+        except Exception as exc:
+            rospy.loginfo('Could not convert input message [{}]' + \
+                          ' to {{ rossub.topic.msgType }}'.format(msg))
+
+    def _init_ros_publisher(self):
+        if self.debug:
+            log_level = rospy.DEBUG
+        else:
+            log_level = rospy.INFO
+        _uri = self.ros_endpoint.uri
+        _node_name = self.ros_endpoint.name
+        _msg_type = self.ros_endpoint.msg_type
+
+        _msg_pkg = _msg_type.split('/')[0]
+        _msg_cls  = _msg_type.split('/')[1]
+
+        msg_cls = get_message_class(_msg_type)
+
+        self._ros_pub = rospy.Publisher(
+            _uri,
+            msg_cls,
+            queue_size=10
+        )
+        rospy.loginfo('ROS Publisher <{}> ready!'.format(_uri))
+
+    def run(self):
+        """Start the Bridge"""
+        self._init_broker_subscriber()
+        self._init_ros_publisher()
+
+        rospy.loginfo('Connector [AMQP:{} -> ROS:{}] ready'.format(
+            self._ros_endpoint.uri, self._broker_endpoint.uri))
+
+        while not rospy.is_shutdown():
+            rospy.sleep(0.001)
