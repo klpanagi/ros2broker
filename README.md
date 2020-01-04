@@ -12,6 +12,7 @@ an Executor.
 from ros2amqp import (
     PubConnector, ROSPubEndpoint, BrokerPubEndpoint,
     SubConnector, ROSSubEndpoint, BrokerSubEndpoint,
+    RPCConnector, ROSServiceEndpoint, BrokerRPCEndpoint,
     BrokerAuthPlain, BrokerDefinition,
     ConnectorThreadExecutor
 )
@@ -54,12 +55,27 @@ def main():
         auth=BrokerAuthPlain(username='bot', password='b0t')
     )
 
+    ros_ep_3 = ROSServiceEndpoint(
+        srv_type='std_srvs/Empty',
+        uri='/test_srv_con',
+        name='test_srv_con'
+    )
+
+    broker_ep_3 = BrokerRPCEndpoint(
+        uri='test_srv_con',
+        name='test_srv_con',
+        broker_ref=broker,
+        auth=BrokerAuthPlain(username='bot', password='b0t')
+    )
+
     pc = PubConnector(ros_ep_1, broker_ep_1)
-    pc2 = SubConnector(ros_ep_2, broker_ep_2)
+    sc = SubConnector(ros_ep_2, broker_ep_2)
+    rpc_con = RPCConnector(ros_ep_3, broker_ep_3)
 
     executor = ConnectorThreadExecutor()
     executor.run_connector(pc)
-    executor.run_connector(pc2)
+    executor.run_connector(sc)
+    executor.run_connector(rpc_con)
 
     executor.run_forever()
 
@@ -68,4 +84,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Can also be found [here](https://github.com/klpanagi/ros2amqp/blob/master/examples/executor.py).
+The example can also be found [here](https://github.com/klpanagi/ros2amqp/blob/master/examples/executor.py).
+
+
+![executor](docs/images/executor.png)
