@@ -43,6 +43,8 @@ from .executor import ConnectorThreadExecutor
 
 from .model_parser import YAMLParser
 
+from .generator import BridgeGenerator
+
 __all__ = [
     'RPCConnector', 'SubConnector', 'PubConnector',
     'ROSPubEndpoint', 'ROSSubEndpoint', 'ROSServiceEndpoint',
@@ -50,5 +52,6 @@ __all__ = [
     'BrokerDefinition',
     'BrokerAuthPlain',
     'ConnectorThreadExecutor',
-    'YAMLParser'
+    'YAMLParser',
+    'BridgeGenerator'
 ]

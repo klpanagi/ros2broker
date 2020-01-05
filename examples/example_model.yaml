@@ -1,3 +1,8 @@
+info:
+  description: "Example"
+  summary: "Example"
+  name: "example_bridge"
+
 broker:
   - name: "home_broker"
     protocol: "AMQP"
