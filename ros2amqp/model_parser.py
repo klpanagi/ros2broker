@@ -22,7 +22,6 @@ from __future__ import (
 )
 
 import yaml
-from pprint import pprint
 
 
 from .connector import (

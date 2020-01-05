@@ -39,13 +39,13 @@ def main():
         model_path = sys.argv[1]
     c_list = YAMLParser.load(model_path)
     executor = ConnectorThreadExecutor()
-    print(c_list)
     for c in c_list:
         executor.run_connector(c)
-    # executor.run_connector(sc)
-    # executor.run_connector(rpc_con)
 
-    executor.run_forever()
+    try:
+        executor.run_forever()
+    except Exception as exc:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

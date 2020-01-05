@@ -36,7 +36,7 @@ connector:
     ros_endpoint:
       name: "c"
       uri: "/example_rpc"
-      srv_type: "std_srvs/Empty"
+      srv_type: "std_srvs/SetBool"
     broker_endpoint:
       name: "c"
       uri: "example_rpc"

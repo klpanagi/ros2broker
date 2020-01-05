@@ -22,7 +22,7 @@ from __future__ import (
 )
 
 import uuid
-
+import traceback
 import rospy
 import amqp_common
 import json
@@ -31,7 +31,9 @@ from rosconversions import (
     ros_msg_to_dict,
     get_message_class,
     get_service_class,
-    dict_to_ros_msg
+    dict_to_ros_msg,
+    dict_to_ros_srv_request,
+    ros_srv_resp_to_dict
 )
 
 from .endpoint import *
@@ -147,7 +149,23 @@ class RPCConnector(Connector):
         rospy.loginfo('ROS Service Client [{}] ready'.format(_uri))
 
     def _broker_rpc_callback(self, msg, meta):
-        pass
+        """."""
+        resp = {}
+        try:
+            srv_cls = get_service_class(self.ros_endpoint.srv_type)
+            srv_req = dict_to_ros_srv_request(self.ros_endpoint.srv_type, msg)
+            rospy.loginfo('Calling ROS Service <%s>' % (self.ros_endpoint.uri))
+            resp = self.ros_srv(srv_req)
+        except rospy.ServiceException as exc:
+            rospy.logerr('ROS Service call failed: {}'.format(exc))
+            resp = None
+        except Exception as exc:
+            print(traceback.format_exc())
+            resp = None
+        if resp is None:
+            resp = srv_cls._response_class()
+        data = ros_srv_resp_to_dict(resp)
+        return data
 
     def run(self):
         """Start the bridge."""
