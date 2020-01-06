@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 # Copyright (C) 2020  Panayiotou, Konstantinos <klpanagi@gmail.com>
 # Author: Panayiotou, Konstantinos <klpanagi@gmail.com>
@@ -53,6 +53,12 @@ setup(
     #  configuration files, message catalogs, data files
     data_files=[],
     # A script(s) to be installed into standard locations like /usr/bin
-    scripts=[],
+    scripts=['bin/ros2amqp'],
+    console_scripts={
+        'console_scripts': [
+            'ros2amqp = ros2amqp.cli:main'
+        ]
+    },
     zip_safe=True,
-    long_description=read('README.md') if os.path.exists('README.md') else "")
+    long_description=read('README.md') if os.path.exists('README.md') else ""
+)

@@ -45,6 +45,7 @@ from .model_parser import YAMLParser
 
 from .generator import BridgeGenerator
 
+
 __all__ = [
     'RPCConnector', 'SubConnector', 'PubConnector',
     'ROSPubEndpoint', 'ROSSubEndpoint', 'ROSServiceEndpoint',
