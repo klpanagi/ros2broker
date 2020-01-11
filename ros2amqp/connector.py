@@ -286,6 +286,7 @@ class PubConnector(Connector):
         while not rospy.is_shutdown():
             rospy.sleep(0.001)
 
+
 class SubConnector(Connector):
     def __init__(
             self,
