@@ -1,9 +1,11 @@
 # ros2amqp
 ROS/ROS2 to AMQP (Rabbitmq) protocol connectors
 
+![executor](docs/images/executor.png)
+
 ## Examples
 
-### Example 1 - Create dynamic instances from input model file
+### Example 1 - Dynamically create and run model instances from input model file
 
 ```python
 from __future__ import (
@@ -42,6 +44,8 @@ if __name__ == "__main__":
     main()
 
 ```
+
+### Example 2 - Dynamically create and run model instances programmatically
 
 The below example creates a Sub and a Pub Connector and runs them in
 an Executor.
@@ -127,4 +131,33 @@ if __name__ == "__main__":
 The example can also be found [here](https://github.com/klpanagi/ros2amqp/blob/master/examples/executor.py).
 
 
-![executor](docs/images/executor.png)
+### Example 3 - Generate bridge from input model file
+
+```python
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals
+)
+
+import sys
+
+from ros2amqp import (
+    BridgeGenerator
+)
+
+
+def main():
+    model_path = ''
+    if len(sys.argv) < 2:
+        model_path = 'example_model.yaml'
+    else:
+        model_path = sys.argv[1]
+    bgen = BridgeGenerator()
+    bgen.gen_from_yaml(model_path)
+
+
+if __name__ == "__main__":
+    main()
+```
