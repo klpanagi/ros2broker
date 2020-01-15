@@ -1,7 +1,47 @@
 # ros2amqp
 ROS/ROS2 to AMQP (Rabbitmq) protocol connectors
 
-## Example
+## Examples
+
+### Example 1 - Create dynamic instances from input model file
+
+```python
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals
+)
+
+import sys
+
+from ros2amqp import (
+    ConnectorThreadExecutor,
+    YAMLParser
+)
+
+
+def main():
+    model_path = ''
+    if len(sys.argv) < 2:
+        model_path = 'example_model.yaml'
+    else:
+        model_path = sys.argv[1]
+    c_list = YAMLParser.load(model_path)
+    executor = ConnectorThreadExecutor()
+    for c in c_list:
+        executor.run_connector(c)
+
+    try:
+        executor.run_forever()
+    except Exception as exc:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
+
+```
 
 The below example creates a Sub and a Pub Connector and runs them in
 an Executor.
