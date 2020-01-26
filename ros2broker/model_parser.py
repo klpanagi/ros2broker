@@ -90,10 +90,14 @@ class YAMLParser(ModelParser):
 
     @staticmethod
     def _create_pub_connector(ros_ep, broker_ep, broker):
+        transport = broker['transport']
+        if transport['type'] != 'AMQP':
+            raise TypeError('Transport type [{}] is not supported'.format(transport['type']))
+
         broker = BrokerDefinition(
             name=None,
             host=broker['host'],
-            port=broker['port'],
+            port=transport['port'],
             vhost=broker['vhost'],
             global_ns=broker['global_ns']
         )
@@ -116,10 +120,14 @@ class YAMLParser(ModelParser):
 
     @staticmethod
     def _create_sub_connector(ros_ep, broker_ep, broker):
+        transport = broker['transport']
+        if transport['type'] != 'AMQP':
+            raise TypeError('Transport type [{}] is not supported'.format(transport['type']))
+
         broker = BrokerDefinition(
             name=None,
             host=broker['host'],
-            port=broker['port'],
+            port=transport['port'],
             vhost=broker['vhost'],
             global_ns=broker['global_ns']
         )
@@ -142,10 +150,14 @@ class YAMLParser(ModelParser):
 
     @staticmethod
     def _create_rpc_connector(ros_ep, broker_ep, broker):
+        transport = broker['transport']
+        if transport['type'] != 'AMQP':
+            raise TypeError('Transport type [{}] is not supported'.format(transport['type']))
+
         broker = BrokerDefinition(
             name=None,
             host=broker['host'],
-            port=broker['port'],
+            port=transport['port'],
             vhost=broker['vhost'],
             global_ns=broker['global_ns']
         )

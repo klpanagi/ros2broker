@@ -5,11 +5,16 @@ info:
 
 broker:
   - name: "home_broker"
-    protocol: "AMQP"
     host: "155.207.33.189"
-    port: 5672
     vhost: '/'
     global_ns: ""
+    transport:
+      type: "AMQP"
+      port: 5672
+    auth:
+      - type: "plain"
+        username: "bot"
+        password: "b0t"
 
 connector:
   - name: "example_pub_connector"
