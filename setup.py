@@ -33,10 +33,10 @@ def read(fname):
 
 setup(
     install_requires=read('requirements.txt').splitlines(),
-    name='ros2amqp',
+    name='ros2broker',
     version='0.1.0',
     description= 'ROS/ROS2 to AMQP (RabbitMQ broker) protocol connectors',
-    url='https://github.com/klpanagi/ros2amqp',
+    url='https://github.com/klpanagi/ros2broker',
     download_url='',
     author='Konstantinos Panayiotou',
     author_email='klpanagi@gmail.com',
@@ -53,10 +53,10 @@ setup(
     #  configuration files, message catalogs, data files
     data_files=[],
     # A script(s) to be installed into standard locations like /usr/bin
-    scripts=['bin/ros2amqp'],
+    scripts=['bin/ros2broker'],
     console_scripts={
         'console_scripts': [
-            'ros2amqp = ros2amqp.cli:main'
+            'ros2broker = ros2broker.cli:main'
         ]
     },
     zip_safe=True,

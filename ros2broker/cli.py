@@ -27,10 +27,9 @@ import sys
 import argparse
 import json
 
-from ros2amqp import (
+from ros2broker import (
     ConnectorThreadExecutor,
-    YAMLParser,
-    BridgeGenerator
+    YAMLParser
 )
 
 
@@ -44,26 +43,17 @@ def main():
         type=str, default='')
 
     args = parser.parse_args()
-    cmd = args.command
     model_file = args.model_file
 
-    if cmd not in ['run', 'gen']:
-        print('Supported commands are: \'run\' and \'gen\'')
+    c_list = YAMLParser.load(model_path)
+    executor = ConnectorThreadExecutor()
+    for c in c_list:
+        executor.run_connector(c)
+
+    try:
+        executor.run_forever()
+    except Exception as exc:
         sys.exit(1)
-    elif cmd == 'run':
-        executor = ConnectorThreadExecutor()
-        c_list = YAMLParser.load(model_file)
-        for c in c_list:
-            executor.run_connector(c)
-
-        try:
-            executor.run_forever()
-        except Exception as exc:
-            sys.exit(1)
-    else:
-        bgen = BridgeGenerator()
-        bgen.gen_from_yaml(model_file)
-
 
 
 if __name__ == "__main__":

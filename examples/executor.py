@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from ros2amqp import (
+from ros2broker import (
     PubConnector, ROSPubEndpoint, BrokerPubEndpoint,
     SubConnector, ROSSubEndpoint, BrokerSubEndpoint,
     RPCConnector, ROSServiceEndpoint, BrokerRPCEndpoint,

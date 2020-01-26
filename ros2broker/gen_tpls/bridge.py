@@ -25,7 +25,7 @@ from __future__ import (
 
 import sys
 
-from ros2amqp import (
+from ros2broker import (
     PubConnector, ROSPubEndpoint, BrokerPubEndpoint,
     SubConnector, ROSSubEndpoint, BrokerSubEndpoint,
     RPCConnector, ROSServiceEndpoint, BrokerRPCEndpoint,

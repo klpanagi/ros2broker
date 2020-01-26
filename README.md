@@ -1,4 +1,4 @@
-# ros2amqp
+# ros2broker
 ROS/ROS2 to AMQP (Rabbitmq) protocol connectors
 
 ![executor](docs/images/executor.png)
@@ -17,7 +17,7 @@ from __future__ import (
 
 import sys
 
-from ros2amqp import (
+from ros2broker import (
     ConnectorThreadExecutor,
     YAMLParser
 )
@@ -53,7 +53,7 @@ an Executor.
 ```python
 #!/usr/bin/python2
 
-from ros2amqp import (
+from ros2broker import (
     PubConnector, ROSPubEndpoint, BrokerPubEndpoint,
     SubConnector, ROSSubEndpoint, BrokerSubEndpoint,
     RPCConnector, ROSServiceEndpoint, BrokerRPCEndpoint,
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     main()
 ```
 
-The example can also be found [here](https://github.com/klpanagi/ros2amqp/blob/master/examples/executor.py).
+The example can also be found [here](https://github.com/klpanagi/ros2broker/blob/master/examples/executor.py).
 
 
 ### Example 3 - Generate bridge from input model file
@@ -143,7 +143,7 @@ from __future__ import (
 
 import sys
 
-from ros2amqp import (
+from ros2broker import (
     BridgeGenerator
 )
 
