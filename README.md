@@ -3,6 +3,24 @@ ROS/ROS2 to AMQP (Rabbitmq) protocol connectors
 
 ![executor](docs/images/executor.png)
 
+## CLI Usage
+
+First create a model as defined by the language. An example model can be found [here](https://github.com/klpanagi/ros2broker/blob/master/examples/example_model.yaml).
+
+### Generator
+
+Run the generator (bin/ros2broker)
+
+```bash
+./ros2broker gen --model-file <PATH_TO_MODEL_FILE>
+```
+
+### Executor
+
+```bash
+./ros2broker run --model-file <PATH_TO_MODEL_FILE>
+```
+
 ## Examples
 
 ### Example 1 - Dynamically create and run model instances from input model file
