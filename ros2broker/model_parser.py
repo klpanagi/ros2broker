@@ -51,7 +51,7 @@ class YAMLParser(ModelParser):
     def load(fpath):
         c_list = []
         with open(fpath, 'r') as f:
-            model = yaml.load(f, Loader=yaml.FullLoader)
+            model = yaml.load(f, Loader=yaml.Loader)
             connectors = model['connector']
             broker = model['broker']
             for c in connectors:

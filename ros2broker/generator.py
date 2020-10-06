@@ -50,7 +50,7 @@ class BridgeGenerator(object):
         if dest_path is None:
             dest_path = getcwd()
         with open(model_path, 'r') as f:
-            _model = yaml.load(f, Loader=yaml.FullLoader)
+            _model = yaml.load(f, Loader=yaml.Loader)
             _info = _model['info']
             _connectors = _model['connector']
             _broker = _model['broker'][0]
