@@ -354,10 +354,13 @@ class SubConnector(Connector):
         try:
             ros_msg = dict_to_ros_msg(self.ros_endpoint.msg_type, msg)
             rospy.loginfo('Sending message to ROS: {}'.format(ros_msg))
+        except Exception as exc:
+            rospy.loginfo('Could not convert input message <{}>'.format(msg) + \
+                          ' to <{}>'.format(self.ros_endpoint.msg_type))
+        try:
             self._ros_pub.publish(ros_msg)
         except Exception as exc:
-            rospy.loginfo('Could not convert input message [{}]' + \
-                          ' to {{ rossub.topic.msgType }}'.format(msg))
+            rospy.logerr(exc)
 
     def _init_ros_publisher(self):
         """_init_ros_publisher"""
