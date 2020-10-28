@@ -1,4 +1,4 @@
-rosconversions_py
+rosconversions
 PyYAML
 rospkg
 jinja2
